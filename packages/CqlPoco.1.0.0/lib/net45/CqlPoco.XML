@@ -1,0 +1,1032 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CqlPoco</name>
+    </assembly>
+    <members>
+        <member name="T:CqlPoco.ColumnAttribute">
+            <summary>
+            Used on a POCO property of field.  Can be used to override the column name in the database that property or field maps to.
+            When the <see cref="T:CqlPoco.ExplicitColumnsAttribute"/> is used, this attribute also indicates that a property or field should be
+            mapped.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ColumnAttribute.#ctor(System.String)">
+            <summary>
+            Specifies the name of the column in the database to use for this property/field.  If the <see cref="T:CqlPoco.ExplicitColumnsAttribute"/>
+            is used on the POCO, also tells the mapper that this column should be included when mapping.
+            </summary>
+            <param name="name">The name of the column in the database to map this property or field to.</param>
+        </member>
+        <member name="M:CqlPoco.ColumnAttribute.#ctor">
+            <summary>
+            Used with the <see cref="T:CqlPoco.ExplicitColumnsAttribute"/>, indicates this property should be mapped and that the column name
+            is the same as the property or field name.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.ColumnAttribute.Name">
+            <summary>
+            The column name in the database this property or field maps to.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.ColumnAttribute.Type">
+            <summary>
+            Used to override the Type of the column in the database for INSERTs/UPDATEs.  The data in the property/field this attribute is 
+            applied to will be converted to this Type for INSERTs/UPDATEs.  If null, the same Type of the property/field will be used
+            instead.  (NOTE: This does NOT affect the Type when fetching/SELECTing data from the database.)
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Cql">
+            <summary>
+            Represents a CQL statement and its arguments.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Cql.#ctor(System.String,System.Object[])">
+            <summary>
+            Creates a new Cql instance using the CQL string and bind variable values specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Cql.WithOptions(System.Action{CqlPoco.CqlQueryOptions})">
+            <summary>
+            Configures any options for execution of this Cql instance.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Cql.New(System.String,System.Object[])">
+            <summary>
+            Creates a new CQL instance from the CQL statement and parameters specified.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Cql.Statement">
+            <summary>
+            The CQL string.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Cql.Arguments">
+            <summary>
+            Any bind variable values for the CQL string.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Cql.QueryOptions">
+            <summary>
+            Options that are available on a per-query basis.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.CqlBatch">
+            <summary>
+            A batch of CQL statements.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlBatch">
+            <summary>
+            Represents a batch of CQL statements.  Use the write methods (Insert, Update, Delete, etc.) to add statements to the batch.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlWriteClient">
+            <summary>
+            The contract for synchronous write operations.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Insert``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Inserts the specified POCO in Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Update``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Updates the POCO specified in Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Update``1(System.String,System.Object[])">
+            <summary>
+            Updates the table for the POCO type specified (T) using the CQL string and bind variable values specified.  Prepends "UPDATE tablename " to the CQL
+            string you specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+            <typeparam name="T">The POCO Type being updated.</typeparam>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Update``1(CqlPoco.Cql)">
+            <summary>
+            Updates the table for the POCO type specified (T) using the CQL statement specified.  Prepends "UPDATE tablename" to the CQL statement you specify,
+            getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Delete``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Deletes the specified POCO from Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Delete``1(System.String,System.Object[])">
+            <summary>
+            Deletes from the table for the POCO type specified (T) using the CQL string and bind variable values specified.  Prepends "DELETE FROM tablname " to
+            the CQL string you specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Delete``1(CqlPoco.Cql)">
+            <summary>
+            Deletes from the table for the POCO type specified (T) using the CQL string specified.  Prepends "DELETE FROM tablename " to the CQL statement you
+            specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Execute(System.String,System.Object[])">
+            <summary>
+            Executes an arbitrary CQL string with the bind variable values specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteClient.Execute(CqlPoco.Cql)">
+            <summary>
+            Executes the arbitrary CQL statement specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlBatch.ConvertCqlArgument``2(``0)">
+            <summary>
+            Allows you to convert an argument/bind variable value being used in a CQL statement using the same converters that are being used by the client
+            internally, including any user-defined conversions if you configured them.  Will convert a value of Type <typeparamref name="TValue"/> to a value of
+            Type <typeparamref name="TDatabase"/> or throw an InvalidOperationException if no converter is available.
+            </summary>
+            <typeparam name="TValue">The original Type of the value.</typeparam>
+            <typeparam name="TDatabase">The Type expected by Cassandra to convert to.</typeparam>
+            <param name="value">The value to convert.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="P:CqlPoco.ICqlBatch.Statements">
+            <summary>
+            The statements in the batch.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.CqlClientConfiguration">
+            <summary>
+            Main entry point for configuration CqlPoco and retrieving an instance of ICqlClient.  Use the <see cref="M:CqlPoco.CqlClientConfiguration.ForSession(Cassandra.ISession)"/> method
+            to start configuring.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.ConvertTypesUsing(CqlPoco.TypeConversion.TypeConverter)">
+            <summary>
+            Configures CqlPoco to use the specified type conversion factory when getting type conversion functions for converting 
+            between data types in the database and your POCO objects.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.UseMappings(CqlPoco.FluentMapping.Mappings[])">
+            <summary>
+            Configures CqlPoco to use the collections of <see cref="T:CqlPoco.FluentMapping.Mappings"/> specified.  Users should sub-class the <see cref="T:CqlPoco.FluentMapping.Mappings"/>
+            class and use the fluent interface there to define mappings for POCOs.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.UseMappings``1">
+            <summary>
+            Configures CqlPoco to use the collection of mappings defined in Type T.  Type T should be a sub-class of <see cref="T:CqlPoco.FluentMapping.Mappings"/> and
+            must have a paramaterless constructor.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.UseIndividualMappings(CqlPoco.Mapping.ITypeDefinition[])">
+            <summary>
+            Configures CqlPoco to use the individual mappings specified.  Usually used along with the <see cref="T:CqlPoco.FluentMapping.Map`1"/> class which
+            allows you to define mappings with a fluent interface.  Will throw if a mapping has already been defined for a
+            given POCO Type.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.UseIndividualMapping``1">
+            <summary>
+            Configures CqlPoco to use the individual mapping specified by Type T.  Usually Type T will be a sub-class of <see cref="T:CqlPoco.FluentMapping.Map`1"/>
+            and must have a parameterless constructor.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.BuildCqlClient">
+            <summary>
+            Builds a ICqlClient using the configuration you've defined via the configuration interface.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlClientConfiguration.ForSession(Cassandra.ISession)">
+            <summary>
+            Starts building a CqlClientConfiguration for a given Cassandra driver session.  Be sure to call <see cref="M:CqlPoco.CqlClientConfiguration.BuildCqlClient"/>
+            when you're finished to get an instance of the client for use in your application.
+            </summary>
+            <param name="session">The Cassandra driver session for interacting with the database.</param>
+            <returns>A CqlClientConfiguration object that can be further configured.</returns>
+        </member>
+        <member name="T:CqlPoco.CqlQueryOptions">
+            <summary>
+            Represents options available on a per-query basis.
+            </summary>
+        </member>
+        <member name="F:CqlPoco.CqlQueryOptions.None">
+            <summary>
+            An empty instance of CqlQueryOptions (i.e. no options are set).
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.SetConsistencyLevel(Cassandra.ConsistencyLevel)">
+            <summary>
+            Sets the consistency level to be used when executing the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.EnableTracing">
+            <summary>
+            Enables tracing for the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.DisableTracing">
+            <summary>
+            Disables tracing for the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.SetPageSize(System.Int32)">
+            <summary>
+            Sets the page size for automatic paging for the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.SetRetryPolicy(Cassandra.IRetryPolicy)">
+            <summary>
+            Sets the retry policy for the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.SetSerialConsistencyLevel(Cassandra.ConsistencyLevel)">
+            <summary>
+            Sets the serial consistency level for execution of the query.  (NOTE: This only applies to queries using lightweight
+            transactions -- LWT).
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.DoNotPrepare">
+            <summary>
+            Specifies that a PreparedStatement should not be used for executing the query.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.CopyOptionsToStatement(Cassandra.IStatement)">
+            <summary>
+            Copies any options set on this Cql instance to the statement provided.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.CqlQueryOptions.New">
+            <summary>
+            Creates a new instance of CqlQueryOptions.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.CqlQueryOptions.NoPrepare">
+            <summary>
+            Whether or not to use a PreparedStatement when executing the query.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.CqlQueryOptions.EmptyQueryOptions">
+            <summary>
+            Represents no query options.  Copying options to a statement is a no-op.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ExplicitColumnsAttribute">
+            <summary>
+            Used on a POCO to tell the mapper to only map properties/fields on the POCO that have a <see cref="T:CqlPoco.ColumnAttribute"/>.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.FluentMapping.ColumnMap">
+            <summary>
+            A class for defining how a property or field on a POCO is mapped to a column via a fluent-style interface.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.IColumnDefinition">
+            <summary>
+            A definition for how a property/field maps to a POCO.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.MemberInfo">
+            <summary>
+            The MemberInfo for the property or field.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.MemberInfoType">
+            <summary>
+            The Type of the property or field (i.e. FieldInfo.FieldType or PropertyInfo.PropertyType).
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.ColumnName">
+            <summary>
+            The name of the column in the database that this property/field maps to.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.ColumnType">
+            <summary>
+            The data type of the column in C* for inserting/updating data.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.Ignore">
+            <summary>
+            Whether the property/field should be ignored when mapping.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.IColumnDefinition.IsExplicitlyDefined">
+            <summary>
+            Whether or not this column has been explicitly defined (for use when TypeDefinition.ExplicitColumns is true).
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.ColumnMap.#ctor(System.Reflection.MemberInfo,System.Type,System.Boolean)">
+            <summary>
+            Creates a new ColumnMap for the property/field specified by the MemberInfo.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.ColumnMap.Ignore">
+            <summary>
+            Tells the mapper to ignore this property/field when mapping.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.ColumnMap.WithName(System.String)">
+            <summary>
+            Tells the mapper to use the column name specified when mapping the property/field.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.ColumnMap.WithDbType(System.Type)">
+            <summary>
+            Tells the mapper to convert the data in the property or field to the Type specified when doing an INSERT or UPDATE (i.e. the
+            column type in Cassandra).  (NOTE: This does NOT affect the Type when fetching/SELECTing data from the database.)
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.ColumnMap.WithDbType``1">
+            <summary>
+            Tells the mapper to convert the data in the property or field to Type T when doing an INSERT or UPDATE (i.e. the
+            column type in Cassandra).  (NOTE: This does NOT affect the Type when fetching/SELECTing data from the database.)
+            </summary>
+        </member>
+        <member name="T:CqlPoco.FluentMapping.Map`1">
+            <summary>
+            A class for defining how to map a POCO via a fluent-style interface.  The mapping for Type T should be defined in the
+            constructor of the sub class.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.ITypeDefinition">
+            <summary>
+            A definition for how to map a POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.ITypeDefinition.GetColumnDefinition(System.Reflection.FieldInfo)">
+            <summary>
+            Gets a column definition for the given field on the POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.ITypeDefinition.GetColumnDefinition(System.Reflection.PropertyInfo)">
+            <summary>
+            Gets a column definition for the given property on the POCO.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.ITypeDefinition.PocoType">
+            <summary>
+            The Type of the POCO.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.ITypeDefinition.TableName">
+            <summary>
+            The name of the table to map the POCO to.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.ITypeDefinition.ExplicitColumns">
+            <summary>
+            Whether or not this POCO should only have columns explicitly defined mapped.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.ITypeDefinition.PrimaryKeyColumns">
+            <summary>
+            The primary key columns.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.#ctor">
+            <summary>
+            Creates a new fluent mapping definition for POCOs of Type TPoco.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.TableName(System.String)">
+            <summary>
+            Specifies what table to map the POCO to.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.PrimaryKey(System.String[])">
+            <summary>
+            Specifies the primary key column names for the table.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.PrimaryKey(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Specifies the properties/fields on the POCO whose column names are the primary key for the table.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.ExplicitColumns">
+            <summary>
+            Specifies that when mapping, we should only map columns that are explicitly defined here.  Use the <see cref="M:CqlPoco.FluentMapping.Map`1.Column``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Action{CqlPoco.FluentMapping.ColumnMap})"/> method
+            to define columns.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.Column``1(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Action{CqlPoco.FluentMapping.ColumnMap})">
+            <summary>
+            Defines options for mapping the column specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Map`1.GetPropertyOrField``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Gets the MemberInfo for the property or field that the expression provided refers to.  Will throw if the Expression does not refer
+            to a valid property or field on TPoco.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.FluentMapping.Mappings">
+            <summary>
+            A class for defining how to map multiple POCOs via a fluent-style interface.  Inheritors should use the 
+            <see cref="M:CqlPoco.FluentMapping.Mappings.For``1"/> method inside their constructor to define mappings.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Mappings.#ctor">
+            <summary>
+            Creates a new collection of mappings.  Inheritors should define all their mappings in the constructor of the sub-class.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.FluentMapping.Mappings.For``1">
+            <summary>
+            Adds a mapping for the Poco type specified (TPoco).
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlQueryClient">
+            <summary>
+            The contract for synchronous read operations.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.Fetch``1(CqlPoco.CqlQueryOptions)">
+            <summary>
+            Gets a list of all T from Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.Fetch``1(System.String,System.Object[])">
+            <summary>
+            Gets a list of T from Cassandra using the CQL statement and parameter values specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.Fetch``1(CqlPoco.Cql)">
+            <summary>
+            Gets a list of T from Cassandra using the CQL statement specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.Single``1(System.String,System.Object[])">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement and parameter values specified.  Will throw if
+            no records or more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.Single``1(CqlPoco.Cql)">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement specified.  Will throw if no records or more than
+            one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.SingleOrDefault``1(System.String,System.Object[])">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement and parameter values specified.  Will return the
+            default value of T if no records are found.  Will throw if more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.SingleOrDefault``1(CqlPoco.Cql)">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement specified.  Will return the default value of T if
+            no records are found.  Will throw if more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.First``1(System.String,System.Object[])">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement and parameter values specified.  Will throw if no
+            records are returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.First``1(CqlPoco.Cql)">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement specified.  Will throw if no records are returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.FirstOrDefault``1(System.String,System.Object[])">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement and parameter values specified.  Will return the
+            default value of T is no records are found.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryClient.FirstOrDefault``1(CqlPoco.Cql)">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement specified.  Will return the default value of T if
+            no records are found.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlWriteAsyncClient">
+            <summary>
+            The contract for Async write operations.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.InsertAsync``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Inserts the specified POCO in Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.UpdateAsync``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Updates the POCO specified in Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.UpdateAsync``1(System.String,System.Object[])">
+            <summary>
+            Updates the table for the POCO type specified (T) using the CQL string and bind variable values specified.  Prepends "UPDATE tablename " to the CQL
+            string you specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+            <typeparam name="T">The POCO Type being updated.</typeparam>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.UpdateAsync``1(CqlPoco.Cql)">
+            <summary>
+            Updates the table for the poco type specified (T) using the CQL statement specified.  Prepends "UPDATE tablename" to the CQL statement you specify,
+            getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.DeleteAsync``1(``0,CqlPoco.CqlQueryOptions)">
+            <summary>
+            Deletes the specified POCO from Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.DeleteAsync``1(System.String,System.Object[])">
+            <summary>
+            Deletes from the table for the POCO type specified (T) using the CQL string and bind variable values specified.  Prepends "DELETE FROM tablname " to
+            the CQL string you specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.DeleteAsync``1(CqlPoco.Cql)">
+            <summary>
+            Deletes from the table for the POCO type specified (T) using the CQL statement specified.  Prepends "DELETE FROM tablename " to the CQL statement you
+            specify, getting the tablename appropriately from the POCO Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.ExecuteAsync(System.String,System.Object[])">
+            <summary>
+            Executes an arbitrary CQL string with the bind variable values specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlWriteAsyncClient.ExecuteAsync(CqlPoco.Cql)">
+            <summary>
+            Executes an arbitrary CQL statement.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.IgnoreAttribute">
+            <summary>
+            Tells the mapper to ignore mapping this property.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.AttributeBasedColumnDefinition">
+            <summary>
+            A column definition that uses attributes on the field/property to get its settings.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.AttributeBasedColumnDefinition.#ctor(System.Reflection.FieldInfo)">
+            <summary>
+            Creates a new column definition for the field specified using any attributes on the field to determine mapping configuration.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.AttributeBasedColumnDefinition.#ctor(System.Reflection.PropertyInfo)">
+            <summary>
+            Creates a new column definition for the property specified using any attributes on the property to determine mapping configuration.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.AttributeBasedTypeDefinition">
+            <summary>
+            A type definition that uses attributes on the class to determine its settings.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.AttributeBasedTypeDefinition.#ctor(System.Type)">
+            <summary>
+            Creates a new TypeDefinition for the POCO Type specified using any attributes on the class to determine mappings.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.PrimaryKeyAttribute">
+            <summary>
+            An attribute used to indicate the primary key column names for the table a POCO is mapped to.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.PrimaryKeyAttribute.#ctor(System.String[])">
+            <summary>
+            Specify the primary key column names (in order) for the table.
+            </summary>
+            <param name="columnNames">The column names for the table's primary key.</param>
+        </member>
+        <member name="P:CqlPoco.PrimaryKeyAttribute.ColumnNames">
+            <summary>
+            The column names of the primary key columns for the table.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Statements.CqlGenerator">
+            <summary>
+            A utility class capable of generating CQL statements for a POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.AddSelect``1(CqlPoco.Cql)">
+            <summary>
+            Adds "SELECT columnlist" and "FROM tablename" to a CQL statement if they don't already exist for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.GenerateInsert``1">
+            <summary>
+            Generates an "INSERT INTO tablename (columns) VALUES (?)" statement for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.GenerateUpdate``1">
+            <summary>
+            Generates an "UPDATE tablename SET columns = ? WHERE pkColumns = ?" statement for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.PrependUpdate``1(CqlPoco.Cql)">
+            <summary>
+            Prepends the CQL statement specified with "UPDATE tablename " for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.GenerateDelete``1">
+            <summary>
+            Generates a "DELETE FROM tablename WHERE pkcolumns = ?" statement for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Statements.CqlGenerator.PrependDelete``1(CqlPoco.Cql)">
+            <summary>
+            Prepends the CQL statement specified with "DELETE FROM tablename " for a POCO of Type T.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.TypeConversion.NullableEnumStringMapper`1">
+            <summary>
+            Static class for mapping between strings and nullable enums.  Uses a cache internally to speed lookups.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.NullableEnumStringMapper`1.MapStringToEnum(System.String)">
+            <summary>
+            Converts a string value to a nullable enum value of Type T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.NullableEnumStringMapper`1.MapEnumToString(`0)">
+            <summary>
+            Converts a nullable enum value of Type T to a string.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Utils.EnumerableExtensions">
+            <summary>
+            Extension methods to IEnumerable&lt;T&gt;.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Utils.EnumerableExtensions.ToCommaDelimitedString(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Converts an IEnumerable&lt;string&gt; to a comma-delimited string.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Utils.LookupKeyedCollection`2">
+            <summary>
+            A concrete implementation of System.Collections.ObjectModel.KeyedCollection which acts as a List/Dictionary hybrid where
+            the Dictionary key is embedded in the item and list order is preserved.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.PocoDataFactory">
+            <summary>
+            Factory responsible for creating PocoData instances.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.PocoDataFactory.GetMappableFields(System.Type)">
+            <summary>
+            Gets any public instance fields that are settable for the given type.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.PocoDataFactory.GetMappableProperties(System.Type)">
+            <summary>
+            Gets any public instance properties for the given type.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.TableNameAttribute">
+            <summary>
+            Used to specify the table a POCO maps to.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TableNameAttribute.#ctor(System.String)">
+            <summary>
+            Specifies the table a POCO maps to.
+            </summary>
+            <param name="tableName">The name of the table to map this POCO to.</param>
+        </member>
+        <member name="P:CqlPoco.TableNameAttribute.Value">
+            <summary>
+            The table name.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.TypeConversion.EnumStringMapper`1">
+            <summary>
+            A class that maps strings to enum values.  Uses a cache internally to speed lookups.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.EnumStringMapper`1.MapStringToEnum(System.String)">
+            <summary>
+            Converts a string value to an enum of Type T.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlClient">
+            <summary>
+            A client for creating, updating, deleting, and reading POCOs from a Cassandra cluster.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.ICqlQueryAsyncClient">
+            <summary>
+            A client capable of querying (reading) POCOs from a Cassandra cluster.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FetchAsync``1(CqlPoco.CqlQueryOptions)">
+            <summary>
+            Gets a list of all T from Cassandra.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FetchAsync``1(System.String,System.Object[])">
+            <summary>
+            Gets a list of T from Cassandra using the CQL statement and parameter values specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FetchAsync``1(CqlPoco.Cql)">
+            <summary>
+            Gets a list of T from Cassandra using the CQL statement specified.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.SingleAsync``1(System.String,System.Object[])">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement and parameter values specified.  Will throw if
+            no records or more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.SingleAsync``1(CqlPoco.Cql)">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement specified.  Will throw if no records or more than one
+            record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.SingleOrDefaultAsync``1(System.String,System.Object[])">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement and parameter values specified.  Will return the
+            default value of T if no records are found.  Will throw if more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.SingleOrDefaultAsync``1(CqlPoco.Cql)">
+            <summary>
+            Gets a single T from Cassandra using the CQL statement specified.  Will return the default value of T if no
+            records are found.  Will throw if more than one record is returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FirstAsync``1(System.String,System.Object[])">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement and parameter values specified.  Will throw if no
+            records are returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FirstAsync``1(CqlPoco.Cql)">
+            <summary>
+            Gets the first T from Cassandra using the CQL specified.  Will throw if no records are returned.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FirstOrDefaultAsync``1(System.String,System.Object[])">
+            <summary>
+            Gets the first T from Cassandra using the CQL statement and parameter values specified.  Will return the
+            default value of T is no records are found.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlQueryAsyncClient.FirstOrDefaultAsync``1(CqlPoco.Cql)">
+            <summary>
+            Gets the first T from Cassandra using the CQL specified.  Will return the default value of T if no records
+            are found.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlClient.CreateBatch">
+            <summary>
+            Creates a new batch.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlClient.Execute(CqlPoco.ICqlBatch)">
+            <summary>
+            Executes the batch specfied synchronously.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlClient.ExecuteAsync(CqlPoco.ICqlBatch)">
+            <summary>
+            Executes the batch specified asynchronously.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.ICqlClient.ConvertCqlArgument``2(``0)">
+            <summary>
+            Allows you to convert an argument/bind variable value being used in a CQL statement using the same converters that are being used by the client
+            internally, including any user-defined conversions if you configured them.  Will convert a value of Type <typeparamref name="TValue"/> to a value of
+            Type <typeparamref name="TDatabase"/> or throw an InvalidOperationException if no converter is available.
+            </summary>
+            <typeparam name="TValue">The original Type of the value.</typeparam>
+            <typeparam name="TDatabase">The Type expected by Cassandra to convert to.</typeparam>
+            <param name="value">The value to convert.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="T:CqlPoco.CqlClient">
+            <summary>
+            The default CQL client implementation which uses the DataStax driver ISession provided in the constructor
+            for running queries against a Cassandra cluster.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoColumn.ColumnName">
+            <summary>
+            The name of the column in the database.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoColumn.ColumnType">
+            <summary>
+            The data type of the column in the database for use when inserting/updating.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoColumn.MemberInfo">
+            <summary>
+            The MemberInfo for the POCO field/property.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoColumn.MemberInfoType">
+            <summary>
+            The .NET Type of the POCO field/property (i.e. FieldInfo.FieldType or PropertyInfo.PropertyType)
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.PocoData">
+            <summary>
+            Represents data about a POCO and its mapping to Cassandra Rows in a table.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.PocoData.GetNonPrimaryKeyColumns">
+            <summary>
+            Gets only the PocoColumns from the collection of all columns that are NOT PK columns.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CqlPoco.Mapping.PocoData.GetPrimaryKeyColumns">
+            <summary>
+            Gets only the PocoColumns from the collection of all columns that are PK columns.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoData.PocoType">
+            <summary>
+            The .NET Type of the POCO this data is for.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoData.TableName">
+            <summary>
+            The table name the POCO maps to in C*.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoData.Columns">
+            <summary>
+            All columns (including PK columns) keyed by their column names and ordered so that the primary key columns are in order last.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoData.PrimaryKeyColumns">
+            <summary>
+            The column names for the primary key columns.
+            </summary>
+        </member>
+        <member name="P:CqlPoco.Mapping.PocoData.MissingPrimaryKeyColumns">
+            <summary>
+            The column names of any primary key columns that aren't in the Columns collection.  Could indicate a misconfiguration if the POCO
+            is going to be used in auto-generated UPDATE/DELETE statements.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Mapping.MapperFactory">
+            <summary>
+            Component capable of getting/creating Func&lt;Row, T&gt; functions that create POCOs of type T from a Cassandra Row.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.GetMapper``1(System.String,Cassandra.RowSet)">
+            <summary>
+            Gets a mapper Func that can map from a C* row to the POCO type T for the given statement.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.GetValueCollector``1(System.String,System.Boolean)">
+            <summary>
+            Gets a Func that can collect all the values on a given POCO T and return an object[] of those values in the same
+            order as the PocoColumns for T's PocoData.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.CreateMapper``1(Cassandra.RowSet)">
+            <summary>
+            Creates a mapper Func for going from a C* Row to a POCO, T.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.CreateValueCollector``1(System.Boolean)">
+            <summary>
+            Creates a Func that collects all the values from a POCO (of type T) into an object[], with the values being in the array in the
+            same order as the POCO's PocoData.Columns collection.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.CreateMapperForSingleColumnToPoco``1(Cassandra.RowSet,CqlPoco.Mapping.PocoData)">
+            <summary>
+            Creates a mapper that flattens a single column's value directly to the "POCO"'s value.  (POCO here most likely being a value type/string/etc.)
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.CreateMapperForPoco``1(Cassandra.RowSet,CqlPoco.Mapping.PocoData)">
+            <summary>
+            Creates a mapper Func for a POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.GetExpressionToGetValueFromPoco(System.Linq.Expressions.ParameterExpression,CqlPoco.Mapping.PocoColumn)">
+            <summary>
+            Gets an Expression that gets the value of a POCO field or property.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.GetExpressionToGetColumnValueFromRow(System.Linq.Expressions.ParameterExpression,Cassandra.CqlColumn,System.Type)">
+            <summary>
+            Gets an Expression that represents calling Row.GetValue&lt;T&gt;(columnIndex) and applying any type conversion necessary to
+            convert it to the destination type on the POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.TryGetCreateEmptyCollectionExpression(Cassandra.CqlColumn,System.Type,System.Linq.Expressions.Expression@)">
+            <summary>
+            Tries to get an Expression that will create an empty collection compatible with the POCO column's type if the type coming from
+            the database is a collection type.  Returns true if successful, along with the Expression in an out parameter.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.IsCassandraCollection(Cassandra.CqlColumn)">
+            <summary>
+            Returns true if the CqlColumn is a collection type.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Mapping.MapperFactory.ImplementsCollectionInterface(System.Type)">
+            <summary>
+            Returns true if the Type implements the ICollection&lt;T&gt; interface.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.Statements.StatementFactory">
+            <summary>
+            Creates statements from CQL that can be executed with the C* driver.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.TypeConversion.DefaultTypeConverter">
+            <summary>
+            A default implementation of TypeConversionFactory that doesn't do any user defined conversions.
+            </summary>
+        </member>
+        <member name="T:CqlPoco.TypeConversion.TypeConverter">
+            <summary>
+            A factory for retrieving Functions capable of converting between two Types.  To use custom Type conversions, inheritors
+            should derive from this class and implement the <see cref="M:CqlPoco.TypeConversion.TypeConverter.GetUserDefinedFromDbConverter``2"/> and
+            <see cref="M:CqlPoco.TypeConversion.TypeConverter.GetUserDefinedToDbConverter``2"/> methods.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.#ctor">
+            <summary>
+            Creates a new TypeConverter instance.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.ConvertCqlArgument``2(``0)">
+            <summary>
+            Converts a value of Type <typeparamref name="TValue"/> to a value of Type <typeparamref name="TDatabase"/> using any available converters that would 
+            normally be used when converting a value for storage in Cassandra.  If no converter is available, wlll throw an InvalidOperationException.
+            </summary>
+            <typeparam name="TValue">The value's original Type.</typeparam>
+            <typeparam name="TDatabase">The Type expected by the database for the parameter.</typeparam>
+            <param name="value">The value to be converted.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.GetFromDbConverter(System.Type,System.Type)">
+            <summary>
+            Gets a Function that can convert a source type value from the database to a destination type value on a POCO.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.GetToDbConverter(System.Type,System.Type)">
+            <summary>
+            Gets a Function that can convert a source type value on a POCO to a destination type value for storage in C*.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.FindFromDbConverter``2">
+            <summary>
+            This method is generic because it seems like a good idea to enforce that the abstract method that returns a user-defined Func returns 
+            one with the correct type parameters, so we'd be invoking that abstract method generically via reflection anyway each time.  So we might
+            as well make this method generic and invoke it via reflection (it also makes the code for returning the built-in EnumStringMapper func 
+            simpler since that class is generic).
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.FindToDbConverter``2">
+            <summary>
+            See note above on why this is generic.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.GetUserDefinedFromDbConverter``2">
+            <summary>
+            Gets any user defined conversion functions that can convert a value of type <typeparamref name="TDatabase"/> (coming from Cassandra) to a
+            type of <typeparamref name="TPoco"/> (a field or property on a POCO).  Return null if no conversion Func is available.
+            </summary>
+            <typeparam name="TDatabase">The Type of the source value from Cassandra to be converted.</typeparam>
+            <typeparam name="TPoco">The Type of the destination value on the POCO.</typeparam>
+            <returns>A Func that can convert between the two types or null if one is not available.</returns>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.TypeConverter.GetUserDefinedToDbConverter``2">
+            <summary>
+            Gets any user defined conversion functions that can convert a value of type <typeparamref name="TPoco"/> (coming from a property/field on a
+            POCO) to a type of <typeparamref name="TDatabase"/> (the Type expected by Cassandra for the database column).  Return null if no conversion
+            Func is available.
+            </summary>
+            <typeparam name="TPoco">The Type of the source value from the POCO property/field to be converted.</typeparam>
+            <typeparam name="TDatabase">The Type expected by C* for the database column.</typeparam>
+            <returns>A Func that can converter between the two Types or null if one is not available.</returns>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.DefaultTypeConverter.GetUserDefinedFromDbConverter``2">
+            <summary>
+            Always returns null.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.TypeConversion.DefaultTypeConverter.GetUserDefinedToDbConverter``2">
+            <summary>
+            Always returns null.
+            </summary>
+        </member>
+        <member name="M:CqlPoco.Utils.SessionExtensions.PrepareAsync(Cassandra.ISession,System.String)">
+            <summary>
+            Wraps the BeginPrepare/EndPrepare methods with Task so it can be used with async/await.
+            </summary>
+        </member>
+    </members>
+</doc>

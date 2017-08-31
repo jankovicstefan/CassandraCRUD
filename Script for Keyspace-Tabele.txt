@@ -1,0 +1,16 @@
+CREATE KEYSPACE findjob WITH replication = {
+  'class': 'SimpleStrategy',
+  'replication_factor': '1'
+};
+
+CREATE TABLE jobs (
+jobID uuid,
+jobtitle text, 
+company text, 
+category text, 
+email text, 
+city text, 
+phone text,
+description text,
+PRIMARY KEY (jobID));
+
